@@ -19,12 +19,12 @@ jobs:
         with:
           version: "lab:latest"
           driver: cloud
-          endpoint: "ORG/default"
+          endpoint: ${{ vars.DOCKER_BUILDER_ENDPOINT }}
           install: true
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
-          tags: "${{ vars.DOCKER_USER }}/test:${{ vars.NAME }}"
+          tags: ${{ format('{0}/test:{1}', vars.DOCKER_USER, vars.NAME) }}
           build-args: |
             name=${{ vars.NAME }}
           # For pull requests, export results to the build cache.
