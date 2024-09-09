@@ -2,6 +2,9 @@ FROM lukemathwalker/cargo-chef:latest-rust-1.80.1 as chef
 WORKDIR /app
 RUN apt update && apt install lld clang -y
 
+ARG name
+RUN echo "${name}"
+
 FROM chef as planner
 COPY . .
 # Compute a lock-like file for our project
