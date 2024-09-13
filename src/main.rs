@@ -1,6 +1,12 @@
-use axum::{self, response::IntoResponse, routing::get, Router};
-use tokio::net::TcpListener;
+use axum::{
+    body::Body,
+    http,
+    response::IntoResponse,
+    routing::{any, get},
+    Router,
+};
 use dotenvy::dotenv;
+use tokio::net::TcpListener;
 
 #[tokio::main]
 async fn main() {
@@ -11,7 +17,7 @@ async fn main() {
     let listener = TcpListener::bind(&addr)
         .await
         .expect("Unable to connect to the server");
-    let app = Router::new().route("/", get(index));
+    let app = Router::new().route("/", get(index)).route("/all", any(all));
 
     axum::serve(listener, app)
         .await
@@ -20,4 +26,10 @@ async fn main() {
 
 async fn index() -> impl IntoResponse {
     "Hello, World!"
+}
+
+async fn all(req: http::Request<Body>) -> impl IntoResponse {
+    println!("{:#?}", req);
+
+    http::StatusCode::OK
 }
